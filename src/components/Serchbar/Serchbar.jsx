@@ -5,20 +5,20 @@ import { MdOutlineFindInPage } from "react-icons/md";
 import PropTypes from 'prop-types';
 
 export const Serchbar = ({propSubmit}) => {
-    const [searchPictures, setSearchPictures] = useState('');
+    const [searchInputPictures, setSearchInputPictures] = useState('');
 
     const handleInputChange = (e) => {
 
-        setSearchPictures(e.currentTarget.value.toLowerCase());
+        setSearchInputPictures(e.currentTarget.value.toLowerCase());
     }
 
     const handleNameChange = (e) => {
         e.preventDefault();
         
-        if (searchPictures.trim() === '') {
+        if (searchInputPictures.trim() === '') {
             return toast.error("Please input some name pictures to find ");
         }
-        propSubmit(searchPictures);
+        propSubmit(searchInputPictures);
     }
 
         return (
@@ -31,7 +31,7 @@ export const Serchbar = ({propSubmit}) => {
 
                         <SearchFormInput onChange={handleInputChange}
                             type="text"
-                            value={searchPictures}
+                            value={searchInputPictures}
                             autoComplete="off"
                             autoFocus
                             placeholder="Search images and photos"
