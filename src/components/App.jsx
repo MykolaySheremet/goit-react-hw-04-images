@@ -13,12 +13,13 @@ import { useState, useEffect } from "react";
 export const App = () => {
   const [searchPictures, setSearchPictures] = useState('');
   const [page, setPage] = useState(1);
-  const [perPage, setPerPage] = useState(12);
+  // const [perPage, setPerPage] = useState(12);
   const [error, setError] = useState(null);
   const [loader, setLoader] = useState(false);
   // const [status, setStatus] = useState("idle");
   const [loadingmore, setLoadingmore] = useState(false);
   const [findPictures, setFindPictures] = useState([]);
+  const perPage = 12;
                                                     
 
   const handleSerchImages = (searchInputPictures) => {
