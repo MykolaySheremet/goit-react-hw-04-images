@@ -15,17 +15,15 @@ export const App = () => {
   const [page, setPage] = useState(1);
   const [perPage, setPerPage] = useState(12);
   const [error, setError] = useState(null);
-  const [status, setStatus] = useState("idle");
+  const [loader, setLoader] = useState(false);
+  // const [status, setStatus] = useState("idle");
   const [loadingmore, setLoadingmore] = useState(false);
-  const [findPictures, setFindPictures] = useState({
-                                                    hits: [],
-                                                    totalHits: '',
-                                                    total: '',
-                                          });
+  const [findPictures, setFindPictures] = useState([]);
+                                                    
 
   const handleSerchImages = (searchInputPictures) => {
-    console.log('searchInputPictures', searchInputPictures);
-    console.log('searchPictures', searchPictures);
+    // console.log('searchInputPictures', searchInputPictures);
+    // console.log('searchPictures', searchPictures);
 
     if (searchPictures === searchInputPictures) {
       return toast.error("Enter new query for serch, this query you can seee now-))");
@@ -33,28 +31,27 @@ export const App = () => {
     
     setSearchPictures(searchInputPictures);
     setPage(1);
-    setLoadingmore(false);
-    setFindPictures({
-      hits: [],
-      totalHits: '',
-      total: ''
-    })
+    setLoader(false);
+    setFindPictures([]);
   }
 
   useEffect(() => {
 
     if (searchPictures === '') {
-      console.log('no work')
       return;
     }
-    
-    setStatus("pending");
+    setLoadingmore(false)
+    setLoader(true);
+    setError(null);
 
       
     FechCSerchImages(searchPictures, page, perPage)
       .then(({ total, totalHits, hits }) => {       
           if (total === 0) {
-            setStatus("rejected");
+            // setStatus("rejected");
+            setLoader(false);
+            setError(Error)
+            
             return Promise.reject(new Error(`Sorry, but we can't find ${searchPictures}. Try again.`))
           }
           
@@ -65,63 +62,29 @@ export const App = () => {
           if (page === Math.ceil(totalHits / perPage)) {
             setLoadingmore(false);
           }
-        console.log('data',{ total, totalHits, hits });
-        setFindPictures(prevImages => ({
-          hits: [...prevImages.hits, ...hits],
-          totalHits,
-          total,
-        })); 
-
-        setStatus("resolved");
+        // console.log('data', { total, totalHits, hits });
+       
+        setFindPictures((prevImages)=>([...prevImages, ...hits]))
+        setLoader(false);
         })
       .catch(error => {
         setError(error);
-        setStatus("rejected");
       })
   },[page, searchPictures, perPage])
+
+   
+
+
 
 
   const loadMore = () => {
     setPage(prevPage => prevPage + 1)
-    console.log(page);
+    
     // this.setState(prevState => ({ page: prevState.page + 1 }))
   }
 
+  // console.log('findPictures',findPictures);
 
-
-
-  // componentDidUpdate(prevProps, prevState) {
-
-  //   if (prevState.searchPictures !== this.state.searchPictures ||
-  //     prevState.page !== this.state.page) {
-
-  //     this.setState({ status: "pending" });
-            
-  //     const { searchPictures, page, perPage, } = this.state
-
-  //     FechCSerchImages(searchPictures, page, perPage)
-  //       .then(({ total, totalHits, hits }) => {
-                    
-  //         if (total === 0) {
-  //           this.setState({ status: "rejected" })
-  //           return Promise.reject(new Error(`Sorry, but we can't find ${searchPictures}. Try again.`))
-  //         }
-              
-  //         if (totalHits > perPage) {
-  //           this.setState({ loadingmore: true })
-  //         }
-              
-  //         if (page === Math.ceil(totalHits / perPage)) {
-  //           this.setState({ loadingmore: false });
-  //         }
-                
-  //         this.setState({ findPictures: { total, totalHits, hits }, status: "resolved" })
-              
-  //       })
-  //       .catch(error => this.setState({ error, status: "rejected" }))
-
-  //   }
-  // }
 
 
   return (<div
@@ -139,12 +102,11 @@ export const App = () => {
       }}>
       <Serchbar propSubmit={handleSerchImages} />
       <ToastContainer autoClose={1500} />
-      {status === "pending" && <Loader></Loader>}
-      {status === "rejected" && <Title > {error.message} </Title>}
-      {status === "resolved" && <>
-        <ImageGallery pictureSerch={findPictures}></ImageGallery >
-        {loadingmore && <ButtonMore onClick={loadMore}></ButtonMore>}
-      </>}
+      <ImageGallery pictureSerch={findPictures}></ImageGallery >
+      {loadingmore && <ButtonMore onClick={loadMore}></ButtonMore>}
+      {loader && <Loader></Loader>}
+      {error && <Title > {error.message} </Title>}
+      
     </div>
     );
 

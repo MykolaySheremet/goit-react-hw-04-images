@@ -7,7 +7,7 @@ export const ImageGallery = ({ pictureSerch }) => {
 
     return (
             <ImageGalleryBox>
-                {pictureSerch.hits.map(({ id, webformatURL, tags, largeImageURL }) => <ImageGalleryItem key={id} webformatURL={webformatURL} tags={tags} largeImageURL={largeImageURL} ></ImageGalleryItem>)}
+                {pictureSerch.map(({ id, webformatURL, tags, largeImageURL }) => <ImageGalleryItem key={id} webformatURL={webformatURL} tags={tags} largeImageURL={largeImageURL} ></ImageGalleryItem>)}
             </ImageGalleryBox>
 
             )
@@ -15,13 +15,11 @@ export const ImageGallery = ({ pictureSerch }) => {
 
 
 ImageGallery.propTypes = {
-    pictureSerch: PropTypes.shape({
-        hits: PropTypes.arrayOf(PropTypes.shape({
+    pictureSerch:PropTypes.arrayOf(PropTypes.shape({
             id:PropTypes.number.isRequired,
             webformatURL: PropTypes.string.isRequired,
             tags: PropTypes.string.isRequired,
             largeImageURL: PropTypes.string.isRequired,
         }))
-    })
-    
+
 }        
